@@ -66,6 +66,8 @@ int main(void) {
    WDTCR |= (1<<WDIE);
    */
 
+   set_sleep_mode(SLEEP_MODE_PWR_DOWN);
+
 	for(;;){
 	//_delay_ms(500);
 		//PORTB ^= PIN_SOURCE_4;
@@ -74,6 +76,14 @@ int main(void) {
 		//_delay_ms(500);
 		//PORTB = 0<<LED;
 		//PORTB = 0;
+
+	    cli();
+        sleep_enable();
+        sleep_bod_disable();
+        sei();
+        sleep_cpu();
+        
+		togglePin(LEDBit);
 	}
 	
  /*
@@ -81,7 +91,7 @@ int main(void) {
    WDTCR |= (1<<WDP3); // (1<<WDP2) | (1<<WDP0);
  
    // Enable watchdog timer interrupts
-   WDTCR |= (1<<WDE);
+   WDTCR |= (1<<WDE); 
  
    sei(); // Enable global interrupts
  
@@ -98,8 +108,8 @@ int main(void) {
 ISR(WDT_vect) {
    // Toggle Port B pin 4 output state
    //PORTB ^= 1<<LED;
-	togglePin(LEDBit);
-
+	sleep_disable();
+	
 	//system_sleep();
 }
 
